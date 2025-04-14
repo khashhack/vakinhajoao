@@ -229,7 +229,7 @@
           dados.valor = valor + 5.99;
         }
 
-        const response = await fetch('/gerar-pix', {
+        const response = await fetch('/api/gerar-pix', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ valor: dados.valor, email: dados.email, nome: dados.nome, turbinar })
@@ -245,7 +245,7 @@
           alert('Erro ao gerar Pix. Tente novamente.');
         }
       } else if (tipoSelecionado === 'cartao') {
-        const response = await fetch('/gerar-cartao', {
+        const response = await fetch('/api/gerar-cartao', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(dados)
