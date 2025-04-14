@@ -38,12 +38,19 @@ export default async function handler(req, res) {
         }
       }
     );
+
     const pagamento = response.data;
+
+    if (!pagamento.point_of_interaction) {
+      return res.status(500).json({ erro: "Erro no pagamento. Verifique sua chave do Mercado Pago." });
+    }
+
     res.json({
       pix_qr: pagamento.point_of_interaction.transaction_data.qr_code_base64,
       pix_copiaecola: pagamento.point_of_interaction.transaction_data.qr_code
     });
   } catch (err) {
-    res.status(500).json({ erro: "Erro ao gerar Pix." });
+    console.error("Erro na API:", err?.response?.data || err.message);
+    res.status(500).json({ erro: "Erro ao gerar Pix. Verifique o token do Mercado Pago." });
   }
 }
