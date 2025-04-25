@@ -329,7 +329,24 @@
     }
   </script>
 
- <footer style="text-align:center; padding: 20px 10px; font-size: 14px; color: #777;">
+ <style>
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Garante que o body ocupe pelo menos a altura total da tela */
+  }
+
+  footer {
+    text-align:center;
+    padding: 20px 10px;
+    font-size: 14px;
+    color: #777;
+    margin-top: auto; /* Empurra o footer para a parte inferior */
+  }
+</style>
+
+<body>
+  <footer>
     © 2025 - Todos direitos reservados
   </footer>
 
