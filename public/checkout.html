@@ -161,7 +161,7 @@
       <input type="text" name="nome" required>
 
       <label>Valor da contribuição</label>
-      <input type="number" name="valor" min="1" max="10000" required>
+      <input type="number" name="valor" min="5" max="10000" step="0.01" required>
 
       <label>Forma de pagamento</label>
       <div class="pagamento-options">
@@ -249,13 +249,14 @@
       e.preventDefault();
       const form = new FormData(e.target);
       const dados = Object.fromEntries(form.entries());
-      const valor = parseFloat(dados.valor);
+      const valor = parseFloat(dados.valor.replace(',', '.'));
       const turbinar = document.getElementById('turbinar').checked;
 
-      if (valor <= 0) return alert('Por favor, insira um valor válido.');
+      if (isNaN(valor) || valor < 5) return alert('O valor mínimo da contribuição é R$ 5,00.');
 
       if (tipoSelecionado === 'pix') {
-        if (turbinar) dados.valor = valor + 5.99;
+        dados.valor = turbinar ? (valor + 5.99).toFixed(2) : valor.toFixed(2);
+
         try {
           const res = await fetch('/api/gerar-pix', {
             method: 'POST',
